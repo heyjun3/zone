@@ -1,10 +1,4 @@
-import { IconArrowDownRight, IconArrowUpRight } from '@tabler/icons-react';
 import { Center, Group, Paper, RingProgress, SimpleGrid, Text } from '@mantine/core';
-
-const icons = {
-  up: IconArrowUpRight,
-  down: IconArrowDownRight,
-};
 
 const data = [
   { label: 'Page views', stats: '456,578', progress: 50, color: 'teal', icon: 'up' },
@@ -12,7 +6,6 @@ const data = [
 
 export function StatsRing() {
   const stats = data.map((stat) => {
-    const Icon = icons[stat.icon];
     return (
       <Paper withBorder radius="md" p="xs" key={stat.label}>
         <Group>
@@ -28,7 +21,6 @@ export function StatsRing() {
               </Center>
             }
           />
-
           <div>
             <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
               {stat.label}
