@@ -1,38 +1,51 @@
 import { Center, Group, Paper, RingProgress, SimpleGrid, Text } from '@mantine/core';
+import { useEffect, useState } from 'react';
 
-const data = [
-  { label: 'Page views', stats: '456,578', progress: 50, color: 'teal', icon: 'up' },
-] as const;
+const POMODORO = 60 * 25
 
 export function StatsRing() {
-  const stats = data.map((stat) => {
-    return (
-      <Paper withBorder radius="md" p="xs" key={stat.label}>
-        <Group>
-          <RingProgress
-            size={800}
-            roundCaps
-            thickness={8}
-            sections={[{ value: stat.progress, color: stat.color }]}
-            label={
-              <Center>
-                {/* <Icon size={20} stroke={1.5} /> */}
-                <p>25:00</p>
-              </Center>
-            }
-          />
-          <div>
-            <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
-              {stat.label}
-            </Text>
-            <Text fw={700} size="xl">
-              {stat.stats}
-            </Text>
-          </div>
-        </Group>
-      </Paper>
-    );
-  });
+  const [count, setCount] = useState(POMODORO)
+  const [timerState, setTimerState] = useState<'disable' | 'active'>('active')
+  const ref: { current: null | NodeJS.Timeout } = { current: null }
+  const color = 'teal'
 
-  return <SimpleGrid cols={{ base: 1, sm: 3 }}>{stats}</SimpleGrid>;
+  useEffect(() => {
+    if (timerState != 'active') {
+      return;
+    }
+    if (count > 0) {
+      ref.current = setInterval(() => {
+        setCount((prev) => prev - 1)
+      }, 1000)
+    } else {
+      if (ref.current) {
+        clearInterval(ref.current)
+      }
+    }
+    return () => {
+      if (ref.current) {
+        clearInterval(ref.current)
+      }
+    }
+  }, [timerState, count])
+
+  const timer = (<Paper withBorder radius="md" p="xs" styles={{ root: { width: '1000px' } }} >
+    <Group>
+      <RingProgress
+        size={800}
+        roundCaps
+        thickness={8}
+        sections={[{ value: count / POMODORO * 100, color: color }]}
+        label={
+          <Center>
+            <Text fw={700} size="60">
+              {count}
+            </Text>
+          </Center>
+        }
+      />
+    </Group>
+  </Paper>)
+
+  return <SimpleGrid cols={{ base: 1, sm: 3 }}>{timer}</SimpleGrid>;
 }
