@@ -29,6 +29,8 @@ export function StatsRing() {
     }
   }, [timerState, count])
 
+  const minutes = Math.floor(count / 60)
+  const seconds = count % 60
   const timer = (<Paper withBorder radius="md" p="xs" styles={{ root: { width: '1000px' } }} >
     <Group>
       <RingProgress
@@ -39,7 +41,7 @@ export function StatsRing() {
         label={
           <Center>
             <Text fw={700} size="60">
-              {count}
+              {minutes}:{seconds == 0 ? '00' : seconds}
             </Text>
           </Center>
         }
