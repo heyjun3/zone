@@ -1,7 +1,7 @@
 import { Center, Group, Paper, RingProgress, SimpleGrid, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
 
-const POMODORO = 60 * 25
+const POMODORO = 25 * 60;
 
 export function StatsRing() {
   const [count, setCount] = useState(POMODORO)
@@ -21,6 +21,8 @@ export function StatsRing() {
       if (ref.current) {
         clearInterval(ref.current)
       }
+      setCount(POMODORO)
+      setTimerState('disable')
     }
     return () => {
       if (ref.current) {
@@ -31,23 +33,32 @@ export function StatsRing() {
 
   const minutes = Math.floor(count / 60)
   const seconds = count % 60
-  const timer = (<Paper withBorder radius="md" p="xs" styles={{ root: { width: '1000px' } }} >
-    <Group>
-      <RingProgress
-        size={800}
-        roundCaps
-        thickness={8}
-        sections={[{ value: count / POMODORO * 100, color: color }]}
-        label={
-          <Center>
-            <Text fw={700} size="60">
-              {minutes}:{seconds == 0 ? '00' : seconds}
-            </Text>
-          </Center>
-        }
-      />
-    </Group>
-  </Paper>)
+  const timer = (
+    <Center>
+      <Paper radius="md" p="xs" styles={{ root: { height: 'auto' } }} >
+        <Group>
+          <RingProgress
+            size={800}
+            roundCaps
+            thickness={8}
+            sections={[{ value: count / POMODORO * 100, color: color }]}
+            label={
+              <>
+                <Center>
+                  <Text fw={700} size="60" styles={{ root: { lineHeight: '60px' } }}>
+                    {minutes}:{seconds < 10 ? '0' + seconds : seconds}
+                  </Text>
+                </Center>
+              </>
+            }
+          />
+        </Group>
+        <Text fw={700} size="60" styles={{ root: { lineHeight: '60px' } }}>
+          {minutes}:{seconds < 10 ? '0' + seconds : seconds}
+        </Text>
+      </Paper>
+    </Center>
+    )
 
-  return <SimpleGrid cols={{ base: 1, sm: 3 }}>{timer}</SimpleGrid>;
+  return <SimpleGrid cols={{ base: 1 }} styles={{ root: { backgroundColor: 'white'}}}>{timer}</SimpleGrid>;
 }
